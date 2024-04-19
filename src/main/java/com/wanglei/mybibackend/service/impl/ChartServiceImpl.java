@@ -30,10 +30,9 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
     @Override
     public QueryWrapper<Chart> getQueryWrapper(ChartQueryRequest chartQueryRequest) {
         Long id = chartQueryRequest.getId();
-        String name = chartQueryRequest.getName();
         String chartType = chartQueryRequest.getChartType();
-        String status = chartQueryRequest.getStatus();
         Long userId = chartQueryRequest.getUserId();
+        String name = chartQueryRequest.getName();
 
 
         long size = chartQueryRequest.getPageSize();
@@ -43,10 +42,8 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         QueryWrapper<Chart> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotBlank(name), "title", name);
-        queryWrapper.like(StringUtils.isNotBlank(chartType), "content", chartType);
-        queryWrapper.like(StringUtils.isNotBlank(status), "answer", status);
-
+        queryWrapper.like(StringUtils.isNotBlank(chartType), "chartType", chartType);
+        queryWrapper.like(StringUtils.isNotBlank(name), "name", name);
         queryWrapper.eq(id != null && id > 0, "id", id);
         queryWrapper.eq(userId != null && userId > 0, "userId", userId);
 

@@ -7,9 +7,10 @@ import com.wanglei.mybibackend.commmon.ErrorCode;
 import com.wanglei.mybibackend.commmon.ResultUtils;
 import com.wanglei.mybibackend.exception.BusinessException;
 import com.wanglei.mybibackend.model.domain.User;
-import com.wanglei.mybibackend.model.request.UserLoginRequest;
-import com.wanglei.mybibackend.model.request.UserRegisterRequest;
-import com.wanglei.mybibackend.model.request.UserUpdateRequest;
+import com.wanglei.mybibackend.model.request.user.UserLoginRequest;
+import com.wanglei.mybibackend.model.request.user.UserQueryRequest;
+import com.wanglei.mybibackend.model.request.user.UserRegisterRequest;
+import com.wanglei.mybibackend.model.request.user.UserUpdateRequest;
 import com.wanglei.mybibackend.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,17 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.wanglei.mybibackend.constant.UserConstant.USER_LOGIN_STATE;
 
 @RestController //适用于编写restful风格的API，返回值默认为json类型
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:8080",allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:8000",allowCredentials = "true")
 @Slf4j
 public class UserController {
 
@@ -91,6 +90,9 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 获取当前登录用户
+     */
     @GetMapping("/current")
     public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
@@ -106,10 +108,25 @@ public class UserController {
 
     }
 
+    /**
+     * 查询获取用户（分页）
+     */
+    @PostMapping("list/page")
+    public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest, HttpServletRequest request) {
+        if (userQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long current = userQueryRequest.getCurrent();
+        long size = userQueryRequest.getPageSize();
+        QueryWrapper<User> queryWrapper = userService.getQueryWrapper(userQueryRequest);
+        Page<User> userPage = userService.page(new Page<>(current, size), queryWrapper);
+        return ResultUtils.success(userPage);
+    }
+
 
 
     /**
-     * 主页推荐
+     * 全量查询用户
      *
      * @param pageSize 每页数据量
      * @param pageNum  当前页数
@@ -118,7 +135,7 @@ public class UserController {
     public BaseResponse<Page<User>> userSearch(long pageSize, long pageNum, HttpServletRequest request) {
         User loginUser = userService.getLoginUser(request);
         //如果有缓存，直接读缓存
-        String redisKey = String.format("bromatch:search:%s", loginUser.getId());
+        String redisKey = String.format("mybi:search:%s", loginUser.getId());
         ValueOperations<String, Object> ValueOperations = redisTemplate.opsForValue();
         Page<User> userPage = (Page<User>) ValueOperations.get(redisKey);
         if (userPage != null) {
@@ -136,6 +153,9 @@ public class UserController {
         return ResultUtils.success(userPage);
     }
 
+    /**
+     * 更新用户
+     */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
         if (userUpdateRequest == null) {

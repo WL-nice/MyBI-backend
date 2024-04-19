@@ -1,4 +1,4 @@
-package com.wanglei.mybibackend.model.request;
+package com.wanglei.mybibackend.model.request.user;
 
 
 import lombok.Data;

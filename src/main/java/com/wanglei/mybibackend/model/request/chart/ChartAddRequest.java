@@ -1,16 +1,13 @@
 package com.wanglei.mybibackend.model.request.chart;
 
 
+
 import lombok.Data;
 
 
 
 @Data
-public class ChartUpdateRequest {
-    /**
-     * id
-     */
-    private Long id;
+public class ChartAddRequest {
 
     /**
      * 分析目标
@@ -26,5 +23,10 @@ public class ChartUpdateRequest {
      * 图表数据
      */
     private String chartData;
+
+    /**
+     * 图表类型
+     */
+    private String chartType;
 
 }

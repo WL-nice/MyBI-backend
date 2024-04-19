@@ -2,21 +2,20 @@ package com.wanglei.mybibackend.model.request.chart;
 
 import com.wanglei.mybibackend.commmon.PageRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import java.io.Serializable;
 
-import java.util.Date;
-import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ChartQueryRequest extends PageRequest {
+public class ChartQueryRequest extends PageRequest implements Serializable {
     /**
      * id
      */
     private Long id;
 
-    /**
-     * 图表名称
-     */
-    private String name;
+
+    private String goal;
 
 
     /**
@@ -24,25 +23,14 @@ public class ChartQueryRequest extends PageRequest {
      */
     private String chartType;
 
-    /**
-     * wait,running,succeed,failed
-     */
-    private String status;
+    private String name;
 
-    /**
-     * 执行信息
-     */
-    private String execMessage;
 
     /**
      * 创建用户 id
      */
     private Long userId;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
 
 }

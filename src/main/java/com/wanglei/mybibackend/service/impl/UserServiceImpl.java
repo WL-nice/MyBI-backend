@@ -4,10 +4,12 @@ package com.wanglei.mybibackend.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wanglei.mybibackend.commmon.ErrorCode;
+import com.wanglei.mybibackend.constant.CommonConstant;
 import com.wanglei.mybibackend.exception.BusinessException;
 import com.wanglei.mybibackend.mapper.UserMapper;
 import com.wanglei.mybibackend.model.domain.User;
-import com.wanglei.mybibackend.model.request.UserUpdateRequest;
+import com.wanglei.mybibackend.model.request.user.UserQueryRequest;
+import com.wanglei.mybibackend.model.request.user.UserUpdateRequest;
 import com.wanglei.mybibackend.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -192,6 +194,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public boolean isAdmin(User loginUser) {
         return loginUser != null && loginUser.getUserRole() == ADMIN_ROLE;
+    }
+
+    @Override
+    public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
+     Long id = userQueryRequest.getId();
+     String username = userQueryRequest.getUsername();
+     String userAccount = userQueryRequest.getUserAccount();
+     String sortOrder = userQueryRequest.getSortOrder();
+     String sortField = userQueryRequest.getSortField();
+
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotBlank(username), "username", username);
+        queryWrapper.like(StringUtils.isNotBlank(userAccount), "userAccount", userAccount);
+        queryWrapper.eq(id != null && id > 0, "id", id);
+        queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
+        return queryWrapper;
     }
 
 

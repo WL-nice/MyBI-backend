@@ -1,11 +1,11 @@
 package com.wanglei.mybibackend.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wanglei.mybibackend.model.domain.User;
-import com.wanglei.mybibackend.model.request.UserUpdateRequest;
+import com.wanglei.mybibackend.model.request.user.UserQueryRequest;
+import com.wanglei.mybibackend.model.request.user.UserUpdateRequest;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.List;
 
 /**
  * 用户服务
@@ -73,6 +73,7 @@ public interface UserService extends IService<User> {
 
     boolean isAdmin(User loginUser);
 
+    QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
 }
 
 

@@ -3,7 +3,7 @@ spring:
     name: mybi-backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bro-match
+    url: jdbc:mysql://localhost:3306/mybi
     username: root
     password: 123456
   #sesssion失效时间
@@ -33,7 +33,7 @@ springdoc:
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
-      packages-to-scan: com.wanglei.bromatchback.controller
+      packages-to-scan: com.wanglei.mybibackend.controller
 # knife4j的增强配置，不需要增强可以不配
 knife4j:
   enable: true
