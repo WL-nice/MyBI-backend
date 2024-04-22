@@ -14,4 +14,11 @@ import com.wanglei.mybibackend.model.request.chart.ChartQueryRequest;
 public interface ChartService extends IService<Chart> {
 
     QueryWrapper<Chart> getQueryWrapper(ChartQueryRequest chartQueryRequest);
+
+    /**
+     * 更新图表失败状态
+     * @param chartId
+     * @param execMessage
+     */
+    void handleChartUpdateError(Long chartId, String execMessage);
 }

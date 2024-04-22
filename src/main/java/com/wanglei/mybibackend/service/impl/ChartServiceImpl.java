@@ -11,6 +11,7 @@ import com.wanglei.mybibackend.constant.CommonConstant;
 import com.wanglei.mybibackend.exception.BusinessException;
 import com.wanglei.mybibackend.mapper.ChartMapper;
 import com.wanglei.mybibackend.model.domain.Chart;
+import com.wanglei.mybibackend.model.enums.ChartStatus;
 import com.wanglei.mybibackend.model.request.chart.ChartQueryRequest;
 import com.wanglei.mybibackend.service.ChartService;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +50,18 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
 
         queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         return queryWrapper;
+    }
+
+    @Override
+    public void handleChartUpdateError(Long chartId, String execMessage) {
+        Chart updateChartResult = new Chart();
+        updateChartResult.setId(chartId);
+        updateChartResult.setStatus(ChartStatus.FAILED.getValue());
+        updateChartResult.setExecMessage("execMessage");
+        boolean updateResult = this.updateById(updateChartResult);
+        if (!updateResult) {
+            log.error("更新图表失败状态失败" + chartId + "," + execMessage);
+        }
     }
 }
 
