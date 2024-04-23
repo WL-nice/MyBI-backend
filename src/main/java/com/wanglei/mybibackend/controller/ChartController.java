@@ -88,7 +88,7 @@ public class ChartController {
 
 
     /**
-     * 删除图表
+     * 更新图表
      */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateChart(@RequestBody ChartUpdateRequest chartUpdateRequest, HttpServletRequest request) {
@@ -139,8 +139,8 @@ public class ChartController {
         long current = chartQueryRequest.getCurrent();
         long size = chartQueryRequest.getPageSize();
         QueryWrapper<Chart> queryWrapper = chartService.getQueryWrapper(chartQueryRequest);
-        Page<Chart> questionPage = chartService.page(new Page<>(current, size), queryWrapper);
-        return ResultUtils.success(questionPage);
+        Page<Chart> chartPage = chartService.page(new Page<>(current, size), queryWrapper);
+        return ResultUtils.success(chartPage);
     }
 
     @PostMapping("my/list/page")

@@ -8,6 +8,7 @@ import com.wanglei.mybibackend.constant.CommonConstant;
 import com.wanglei.mybibackend.exception.BusinessException;
 import com.wanglei.mybibackend.mapper.UserMapper;
 import com.wanglei.mybibackend.model.domain.User;
+import com.wanglei.mybibackend.model.request.user.UserAddRequest;
 import com.wanglei.mybibackend.model.request.user.UserQueryRequest;
 import com.wanglei.mybibackend.model.request.user.UserUpdateRequest;
 import com.wanglei.mybibackend.service.UserService;
@@ -211,6 +212,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq(id != null && id > 0, "id", id);
         queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         return queryWrapper;
+    }
+
+    @Override
+    public Boolean addUser(UserAddRequest userAddRequest, HttpServletRequest request) {
+        if(!isAdmin(request)){
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+        User user = new User();
+        BeanUtils.copyProperties(userAddRequest,user);
+        user.setUserPassword(DigestUtils.md5DigestAsHex((SALT + "12345678").getBytes()));
+        return this.save(user);
+
     }
 
 

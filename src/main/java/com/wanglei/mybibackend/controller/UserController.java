@@ -7,10 +7,7 @@ import com.wanglei.mybibackend.commmon.ErrorCode;
 import com.wanglei.mybibackend.commmon.ResultUtils;
 import com.wanglei.mybibackend.exception.BusinessException;
 import com.wanglei.mybibackend.model.domain.User;
-import com.wanglei.mybibackend.model.request.user.UserLoginRequest;
-import com.wanglei.mybibackend.model.request.user.UserQueryRequest;
-import com.wanglei.mybibackend.model.request.user.UserRegisterRequest;
-import com.wanglei.mybibackend.model.request.user.UserUpdateRequest;
+import com.wanglei.mybibackend.model.request.user.*;
 import com.wanglei.mybibackend.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,6 +52,18 @@ public class UserController {
         long result = userService.UserRegister(userAccount, userPassword, checkPassword);
         return ResultUtils.success(result);
 
+    }
+
+    @PostMapping("/add")
+    public BaseResponse<Boolean> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
+        if (userAddRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        if(loginUser==null){
+            throw new BusinessException(ErrorCode.NO_LOGIN);
+        }
+        return ResultUtils.success(userService.addUser(userAddRequest, request));
     }
 
     /**
@@ -115,6 +124,9 @@ public class UserController {
     public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest, HttpServletRequest request) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        if (!userService.isAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH);
         }
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
