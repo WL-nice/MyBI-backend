@@ -21,6 +21,7 @@ public class UserUpdateRequest {
      */
     private String userAccount;
 
+
     /**
      * 头像
      */
